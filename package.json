@@ -7,7 +7,9 @@
   },
   "main": "index.js",
   "scripts": {
-    "start:dev": "tsx --watch ./src/server/index.ts",
+    "start": "tsx --watch ./src/server/index.ts",
+    "build":"tsup src",
+    "prod":"node ./dist/server",
     "test": "vitest"
   },
   "keywords": [],
@@ -21,6 +23,7 @@
   },
   "dependencies": {
     "fastify": "^4.25.2",
+    "tsup": "^8.0.1",
     "zod": "^3.22.4"
   }
 }
