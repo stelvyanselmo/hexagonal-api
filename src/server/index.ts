@@ -32,7 +32,9 @@ server.post("/payload", async (req, replay)=>{
 
     try {
 
-         server.listen({port:3333});
+         server.listen({ host:'0.0.0.0', port: process.env.PORT ? Number(process.env.PORT) : 3333 });
+         
+         console.log("HTTP SERVER RUNNING...");
          
      } catch (error) {
      
