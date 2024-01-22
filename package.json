@@ -2,9 +2,13 @@
   "name": "hexagonal-api",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "node": "18"
+  },
   "main": "index.js",
   "scripts": {
-    "test": "tsx --watch ./src/server"
+    "start:dev": "tsx --watch ./src/server/index.ts",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "Stelvy Anselmo",
@@ -14,5 +18,9 @@
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.2.1"
+  },
+  "dependencies": {
+    "fastify": "^4.25.2",
+    "zod": "^3.22.4"
   }
 }
