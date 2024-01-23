@@ -1,3 +1,4 @@
+"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -21,7 +22,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// src/server/index.ts
+// src/adapters/inbound/server/index.ts
 var import_fastify = __toESM(require("fastify"));
 
 // src/core/domain/entities/common/entity.ts
@@ -58,17 +59,17 @@ var Users = class _Users extends Entity {
   }
 };
 
-// src/core/domain/use-cases/create-user-use-case.ts
-var CreateUserUseCAse = class {
+// src/core/domain/use-cases/users/create.ts
+var CreateUserUseCase = class {
   constructor(userAdaptersPort) {
     this.userAdaptersPort = userAdaptersPort;
   }
-  async execute(props) {
-    const user = await this.userAdaptersPort.find(props.email);
+  async execute({ name, email, pwd }) {
+    const user = await this.userAdaptersPort.find(email);
     if (user !== null) {
       throw new Error("This email adress already exists, try another email adress!");
     }
-    const userObject = Users.create(props);
+    const userObject = Users.create({ name, email, pwd });
     await this.userAdaptersPort.save(userObject);
     return {
       message: "user created successfully"
@@ -76,15 +77,29 @@ var CreateUserUseCAse = class {
   }
 };
 
+// src/core/domain/use-cases/users/findAll.ts
+var FindAllUsersUseCase = class {
+  constructor(userAdaptersPort) {
+    this.userAdaptersPort = userAdaptersPort;
+  }
+  async execute() {
+    const users = await this.userAdaptersPort.findAll();
+    return users;
+  }
+};
+
 // src/adapters/outbound/repositories/in-memory-users-repositories.ts
 var InMemoryUsersRepository = class _InMemoryUsersRepository {
   static users = [];
+  async save(user) {
+    _InMemoryUsersRepository.users.push(user);
+  }
   async findAll() {
+    console.log("all users", _InMemoryUsersRepository.users);
     return _InMemoryUsersRepository.users;
   }
-  async save(user) {
-    console.log("data saved", user, _InMemoryUsersRepository.users);
-    _InMemoryUsersRepository.users.push(user);
+  update(email) {
+    throw new Error("Method not implemented.");
   }
   async find(email) {
     const user = _InMemoryUsersRepository.users.find((user2) => user2.props.email == email);
@@ -93,25 +108,62 @@ var InMemoryUsersRepository = class _InMemoryUsersRepository {
     }
     return user;
   }
+  delete(email) {
+    throw new Error("Method not implemented.");
+  }
 };
 
-// src/server/index.ts
-var import_zod = __toESM(require("zod"));
+// src/adapters/inbound/server/routes/dependencies.ts
+var inMemoryUsersRepository = new InMemoryUsersRepository();
+var findAll = new FindAllUsersUseCase(inMemoryUsersRepository);
+var create = new CreateUserUseCase(inMemoryUsersRepository);
+
+// src/adapters/inbound/server/routes/routes.users.ts
+var import_zod = require("zod");
+var Routes = class {
+  _routes;
+  _findAll;
+  _create;
+  constructor(fastifyInstance, findAll2, create2) {
+    this._routes = fastifyInstance;
+    this._findAll = findAll2;
+    this._create = create2;
+  }
+  async create(props) {
+    const response = await this._create.execute(props);
+    return response;
+  }
+  async findAll() {
+    return await this._findAll.execute();
+  }
+  //@routes group
+  async routesGroup() {
+    this._routes.get("/", async (req, replay) => {
+      const users = await this.findAll();
+      return await replay.send({ users });
+    });
+    this._routes.post("/", async (request, replay) => {
+      const userSchema = import_zod.z.object({
+        name: import_zod.z.string(),
+        email: import_zod.z.string(),
+        pwd: import_zod.z.string()
+      });
+      const payload = userSchema.parse(request.body);
+      const response = await this.create(payload);
+      return replay.send(response);
+    });
+  }
+};
+async function routes(fastify2) {
+  return new Routes(fastify2, findAll, create).routesGroup();
+}
+
+// src/adapters/inbound/server/index.ts
 var server = (0, import_fastify.default)({ logger: true });
-server.post("/payload", async (req, replay) => {
-  const createUserSchema = import_zod.default.object({
-    name: import_zod.default.string(),
-    email: import_zod.default.string(),
-    pwd: import_zod.default.string()
-  });
-  const payload = createUserSchema.parse(req.body);
-  const adapter = new InMemoryUsersRepository();
-  const execute = new CreateUserUseCAse(adapter);
-  const response = await execute.execute(payload);
-  replay.code(202).send(response);
-});
+server.register(routes, { prefix: "user" });
 try {
-  server.listen({ port: 3333 });
+  server.listen({ host: "0.0.0.0", port: process.env.PORT ? Number(process.env.PORT) : 3333 });
+  console.log("HTTPs SERVER RUNNING...");
 } catch (error) {
   server.log.error(error);
   process.exit(1);

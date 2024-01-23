@@ -1,28 +1,28 @@
 import Users from "../../../core/domain/entities/users";
-import UserAdaptersPort from "../../../core/domain/ports/outbound/userAdaptersPort";
+import UserAdaptersPort from "../../../core/domain/ports/outbound/userOutboundPort";
 
 //@database in memory using repositories pattern
 export default class InMemoryUsersRepository implements UserAdaptersPort {
 
-    public static users: Users[] = [];
-
-
-
-    async findAll(): Promise<Users[]> {
-        
-       return InMemoryUsersRepository.users;
-
-    }
+    private static readonly users: Users[] = [];
 
     async save(user: Users): Promise<void> {
 
+         InMemoryUsersRepository.users.push(user);
+
+    }
+
+    async findAll(): Promise<Users[]> {
         
-
-        console.log("data saved", user ,InMemoryUsersRepository.users)
+        console.log("all users",InMemoryUsersRepository.users);
         
-        InMemoryUsersRepository.users.push(user);
+        return InMemoryUsersRepository.users;
+ 
+    }
 
+    public update(email: string): Promise<Users | null> {
 
+        throw new Error("Method not implemented.");
 
     }
 
@@ -37,6 +37,12 @@ export default class InMemoryUsersRepository implements UserAdaptersPort {
        }
 
        return user;
+
+    }
+
+    public delete(email: string): Promise<void> {
+
+        throw new Error("Method not implemented.");
 
     }
 

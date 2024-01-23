@@ -1,6 +1,6 @@
-import InMemoryUsersRepository from "../../../adapters/outbound/repositories/in-memory-users-repositories";
+import InMemoryUsersRepository from "../../../../adapters/outbound/repositories/in-memory-users-repositories";
 import { describe,it,expect } from "vitest"
-import FindAllUserUseCAse from "./findAll-user-use-case";
+import FindAllUsersUseCase from "./findAll";
 
 describe("List the users",()=> {
 
@@ -8,7 +8,7 @@ describe("List the users",()=> {
 
         const userAdaptersPorts = new InMemoryUsersRepository();
 
-        const user = new FindAllUserUseCAse(userAdaptersPorts);
+        const user = new FindAllUsersUseCase(userAdaptersPorts);
 
         console.log( await userAdaptersPorts.findAll());
 

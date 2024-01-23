@@ -17,21 +17,18 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/core/domain/entities/common/entity.ts
-var entity_exports = {};
-__export(entity_exports, {
-  default: () => Entity
+// src/core/domain/use-cases/users/findAll.ts
+var findAll_exports = {};
+__export(findAll_exports, {
+  default: () => FindAllUsersUseCase
 });
-module.exports = __toCommonJS(entity_exports);
-var import_crypto = require("crypto");
-var Entity = class {
-  _id;
-  props;
-  constructor(props, id) {
-    this._id = id ?? (0, import_crypto.randomUUID)();
-    this.props = props;
+module.exports = __toCommonJS(findAll_exports);
+var FindAllUsersUseCase = class {
+  constructor(userAdaptersPort) {
+    this.userAdaptersPort = userAdaptersPort;
   }
-  get id() {
-    return this._id;
+  async execute() {
+    const users = await this.userAdaptersPort.findAll();
+    return users;
   }
 };

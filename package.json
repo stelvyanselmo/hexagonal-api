@@ -7,9 +7,9 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "tsx --watch ./src/server/index.ts",
+    "dev": "tsx --watch ./src/adapters/inbound/server/index.ts",
     "build":"tsup src",
-    "prod":"node ./dist/server",
+    "prod":"node ./dist/adapters/inbound/server/index.js",
     "test": "vitest"
   },
   "keywords": [],

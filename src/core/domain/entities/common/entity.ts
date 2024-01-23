@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 
-//@core bussiness 
+//@core bussiness common shared properties
 export default abstract class Entity<T> {
 
     protected _id: string;

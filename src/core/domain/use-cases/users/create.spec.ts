@@ -1,5 +1,5 @@
-import InMemoryUsersRepository from "../../../adapters/outbound/repositories/in-memory-users-repositories";
-import CreateUserUseCAse from "./create-user-use-case";
+import InMemoryUsersRepository from "../../../../adapters/outbound/repositories/in-memory-users-repositories";
+import CreateUserUseCAse from "./create";
 import { describe,it,expect } from "vitest"
 
 describe("Create a user",()=> {

@@ -1,3 +1,4 @@
+"use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -24,12 +25,15 @@ __export(in_memory_users_repositories_exports, {
 module.exports = __toCommonJS(in_memory_users_repositories_exports);
 var InMemoryUsersRepository = class _InMemoryUsersRepository {
   static users = [];
+  async save(user) {
+    _InMemoryUsersRepository.users.push(user);
+  }
   async findAll() {
+    console.log("all users", _InMemoryUsersRepository.users);
     return _InMemoryUsersRepository.users;
   }
-  async save(user) {
-    console.log("data saved", user, _InMemoryUsersRepository.users);
-    _InMemoryUsersRepository.users.push(user);
+  update(email) {
+    throw new Error("Method not implemented.");
   }
   async find(email) {
     const user = _InMemoryUsersRepository.users.find((user2) => user2.props.email == email);
@@ -37,5 +41,8 @@ var InMemoryUsersRepository = class _InMemoryUsersRepository {
       return null;
     }
     return user;
+  }
+  delete(email) {
+    throw new Error("Method not implemented.");
   }
 };

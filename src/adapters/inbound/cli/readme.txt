@@ -1,0 +1,2 @@
+# Aqui podemos adicionar um outro actor primário como uma linha de comando, para interagir com nossa aplicação.
+# Nossa aplicação é agnostíca a qualquer front-end (actor primário) e recursos de infra como banco de dados, sistemas de filas, cache e assim por diante, assim como a cli podemos plugar ela a nossa app por meio das portas expostas por ela ( app ).

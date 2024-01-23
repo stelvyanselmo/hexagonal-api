@@ -3,10 +3,6 @@ var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -17,21 +13,6 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/core/domain/entities/common/entity.ts
-var entity_exports = {};
-__export(entity_exports, {
-  default: () => Entity
-});
-module.exports = __toCommonJS(entity_exports);
-var import_crypto = require("crypto");
-var Entity = class {
-  _id;
-  props;
-  constructor(props, id) {
-    this._id = id ?? (0, import_crypto.randomUUID)();
-    this.props = props;
-  }
-  get id() {
-    return this._id;
-  }
-};
+// src/core/domain/ports/inbound/userInboundPorts.ts
+var userInboundPorts_exports = {};
+module.exports = __toCommonJS(userInboundPorts_exports);

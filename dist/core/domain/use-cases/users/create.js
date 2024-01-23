@@ -1,3 +1,4 @@
+"use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -16,12 +17,12 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/core/domain/use-cases/create-user-use-case.ts
-var create_user_use_case_exports = {};
-__export(create_user_use_case_exports, {
-  default: () => CreateUserUseCAse
+// src/core/domain/use-cases/users/create.ts
+var create_exports = {};
+__export(create_exports, {
+  default: () => CreateUserUseCase
 });
-module.exports = __toCommonJS(create_user_use_case_exports);
+module.exports = __toCommonJS(create_exports);
 
 // src/core/domain/entities/common/entity.ts
 var import_crypto = require("crypto");
@@ -57,17 +58,17 @@ var Users = class _Users extends Entity {
   }
 };
 
-// src/core/domain/use-cases/create-user-use-case.ts
-var CreateUserUseCAse = class {
+// src/core/domain/use-cases/users/create.ts
+var CreateUserUseCase = class {
   constructor(userAdaptersPort) {
     this.userAdaptersPort = userAdaptersPort;
   }
-  async execute(props) {
-    const user = await this.userAdaptersPort.find(props.email);
+  async execute({ name, email, pwd }) {
+    const user = await this.userAdaptersPort.find(email);
     if (user !== null) {
       throw new Error("This email adress already exists, try another email adress!");
     }
-    const userObject = Users.create(props);
+    const userObject = Users.create({ name, email, pwd });
     await this.userAdaptersPort.save(userObject);
     return {
       message: "user created successfully"
