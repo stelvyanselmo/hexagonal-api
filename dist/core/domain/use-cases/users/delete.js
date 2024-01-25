@@ -17,21 +17,21 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/core/domain/entities/common/entity.ts
-var entity_exports = {};
-__export(entity_exports, {
-  default: () => Entity
+// src/core/domain/use-cases/users/delete.ts
+var delete_exports = {};
+__export(delete_exports, {
+  default: () => DeleteUserUseCase
 });
-module.exports = __toCommonJS(entity_exports);
-var import_crypto = require("crypto");
-var Entity = class {
-  id;
-  props;
-  constructor(props, id) {
-    this.id = id ?? (0, import_crypto.randomUUID)();
-    this.props = props;
+module.exports = __toCommonJS(delete_exports);
+var DeleteUserUseCase = class {
+  constructor(adapterPort) {
+    this.adapterPort = adapterPort;
   }
-  get _id() {
-    return this._id;
+  async execute(email) {
+    const response = await this.adapterPort.findOne(email);
+    if (response == null) {
+      throw new Error("user not found, check the email and try again");
+    }
+    await this.adapterPort.delete(email);
   }
 };

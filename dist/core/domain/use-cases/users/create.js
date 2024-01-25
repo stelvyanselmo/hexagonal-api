@@ -27,13 +27,13 @@ module.exports = __toCommonJS(create_exports);
 // src/core/domain/entities/common/entity.ts
 var import_crypto = require("crypto");
 var Entity = class {
-  _id;
+  id;
   props;
   constructor(props, id) {
-    this._id = id ?? (0, import_crypto.randomUUID)();
+    this.id = id ?? (0, import_crypto.randomUUID)();
     this.props = props;
   }
-  get id() {
+  get _id() {
     return this._id;
   }
 };
@@ -63,14 +63,20 @@ var CreateUserUseCase = class {
   constructor(userAdaptersPort) {
     this.userAdaptersPort = userAdaptersPort;
   }
+  //@application orchestrator
   async execute({ name, email, pwd }) {
-    const user = await this.userAdaptersPort.find(email);
+    const user = await this.userAdaptersPort.findOne(email);
     if (user !== null) {
       throw new Error("This email adress already exists, try another email adress!");
     }
     const userObject = Users.create({ name, email, pwd });
-    await this.userAdaptersPort.save(userObject);
+    await this.userAdaptersPort.create(userObject);
     return {
+      resourceType: "user entity",
+      text: {
+        div: "resource generated successfully",
+        status: "success"
+      },
       message: "user created successfully"
     };
   }

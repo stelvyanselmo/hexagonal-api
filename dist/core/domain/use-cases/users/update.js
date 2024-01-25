@@ -17,21 +17,22 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/core/domain/entities/common/entity.ts
-var entity_exports = {};
-__export(entity_exports, {
-  default: () => Entity
+// src/core/domain/use-cases/users/update.ts
+var update_exports = {};
+__export(update_exports, {
+  default: () => UpdateUseCase
 });
-module.exports = __toCommonJS(entity_exports);
-var import_crypto = require("crypto");
-var Entity = class {
-  id;
-  props;
-  constructor(props, id) {
-    this.id = id ?? (0, import_crypto.randomUUID)();
-    this.props = props;
+module.exports = __toCommonJS(update_exports);
+var UpdateUseCase = class {
+  constructor(userAdapterPort) {
+    this.userAdapterPort = userAdapterPort;
   }
-  get _id() {
-    return this._id;
+  //@application orchestrator
+  async execute(email, updatedUser) {
+    const response = await this.userAdapterPort.update(email, updatedUser);
+    if (!response) {
+      throw new Error("Couldn't update. User not found: " + email);
+    }
+    return response;
   }
 };

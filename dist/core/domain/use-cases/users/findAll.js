@@ -27,6 +27,7 @@ var FindAllUsersUseCase = class {
   constructor(userAdaptersPort) {
     this.userAdaptersPort = userAdaptersPort;
   }
+  //@application orchestrator
   async execute() {
     const users = await this.userAdaptersPort.findAll();
     return users;

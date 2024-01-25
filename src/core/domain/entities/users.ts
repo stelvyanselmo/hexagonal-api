@@ -1,6 +1,6 @@
 import Entity from "./common/entity";
 
-export type UserProps = {
+export type UserPropsDto = {
 
     name: string;
     email: string;
@@ -9,17 +9,18 @@ export type UserProps = {
 
 }
 
-//@core bussiness
-export default class Users extends Entity<UserProps> {
+//@core business
+export default class Users extends Entity<UserPropsDto> {
 
-     private constructor(props: UserProps, id?: string) {
+     private constructor(props: UserPropsDto, id?: string) {
 
         super(props, id);
 
     }
 
-    public static create(props: UserProps, id?: string) {
+    public static create(props: UserPropsDto, id?: string) {
 
+        //@validation business
         if (props.name == "") {
 
             throw new Error("Please provide a valid name!");

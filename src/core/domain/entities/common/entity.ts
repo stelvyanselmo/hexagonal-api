@@ -1,19 +1,19 @@
 import { randomUUID } from "crypto";
 
-//@core bussiness common shared properties
+//@core business entities common shared properties
 export default abstract class Entity<T> {
 
-    protected _id: string;
+    protected id: string;
     public props: T;
 
     constructor(props: T, id?: string) {
 
-        this._id = id ?? randomUUID();
+        this.id = id ?? randomUUID();
         this.props = props;
 
     }
 
-    public get id(): string {
+    public get _id(): string {
 
         return this._id
 

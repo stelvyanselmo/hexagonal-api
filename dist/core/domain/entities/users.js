@@ -27,13 +27,13 @@ module.exports = __toCommonJS(users_exports);
 // src/core/domain/entities/common/entity.ts
 var import_crypto = require("crypto");
 var Entity = class {
-  _id;
+  id;
   props;
   constructor(props, id) {
-    this._id = id ?? (0, import_crypto.randomUUID)();
+    this.id = id ?? (0, import_crypto.randomUUID)();
     this.props = props;
   }
-  get id() {
+  get _id() {
     return this._id;
   }
 };

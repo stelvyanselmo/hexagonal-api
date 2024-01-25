@@ -7569,38 +7569,43 @@ var init_magic_string_es = __esm({
 // src/adapters/outbound/repositories/in-memory-users-repositories.ts
 var InMemoryUsersRepository = class _InMemoryUsersRepository {
   static users = [];
-  async save(user) {
+  async create(user) {
     _InMemoryUsersRepository.users.push(user);
   }
   async findAll() {
-    console.log("all users", _InMemoryUsersRepository.users);
     return _InMemoryUsersRepository.users;
   }
-  update(email) {
-    throw new Error("Method not implemented.");
-  }
-  async find(email) {
-    const user = _InMemoryUsersRepository.users.find((user2) => user2.props.email == email);
-    if (!user) {
-      return null;
+  async update(_email, updatedUser) {
+    const index = _InMemoryUsersRepository.users.findIndex(({ props: { email } }) => email == _email);
+    if (index != -1) {
+      _InMemoryUsersRepository.users[index] = updatedUser;
+      return updatedUser;
     }
+    return null;
+  }
+  async findOne(email) {
+    const user = _InMemoryUsersRepository.users.find((user2) => user2.props.email == email);
+    if (!user)
+      return null;
     return user;
   }
-  delete(email) {
-    throw new Error("Method not implemented.");
+  async delete(email) {
+    _InMemoryUsersRepository.users = _InMemoryUsersRepository.users.filter((user) => user.props.email !== email);
   }
+  //@in memory database
+  //Jan 25/ 17:11 P.M
 };
 
 // src/core/domain/entities/common/entity.ts
 var import_crypto = require("crypto");
 var Entity = class {
-  _id;
+  id;
   props;
   constructor(props, id) {
-    this._id = id ?? (0, import_crypto.randomUUID)();
+    this.id = id ?? (0, import_crypto.randomUUID)();
     this.props = props;
   }
-  get id() {
+  get _id() {
     return this._id;
   }
 };
@@ -7630,14 +7635,20 @@ var CreateUserUseCase = class {
   constructor(userAdaptersPort) {
     this.userAdaptersPort = userAdaptersPort;
   }
+  //@application orchestrator
   async execute({ name, email, pwd }) {
-    const user = await this.userAdaptersPort.find(email);
+    const user = await this.userAdaptersPort.findOne(email);
     if (user !== null) {
       throw new Error("This email adress already exists, try another email adress!");
     }
     const userObject = Users.create({ name, email, pwd });
-    await this.userAdaptersPort.save(userObject);
+    await this.userAdaptersPort.create(userObject);
     return {
+      resourceType: "user entity",
+      text: {
+        div: "resource generated successfully",
+        status: "success"
+      },
       message: "user created successfully"
     };
   }

@@ -1,49 +1,57 @@
-import Users from "../../../core/domain/entities/users";
-import UserAdaptersPort from "../../../core/domain/ports/outbound/userOutboundPort";
+import Users, { UserPropsDto } from "../../../core/domain/entities/users";
+import UserOutboundPorts from "../../../core/domain/ports/outbound/userOutboundPort";import { inMemoryUsersRepository } from "../../inbound/server/routes/dependencies";
+ "../../../core/domain/ports/outbound/userOutboundPort";
 
 //@database in memory using repositories pattern
-export default class InMemoryUsersRepository implements UserAdaptersPort {
+export default class InMemoryUsersRepository implements UserOutboundPorts {
 
-    private static readonly users: Users[] = [];
+    private static users: Users[] = [];
 
-    async save(user: Users): Promise<void> {
+    public async create(user: Users): Promise<void> {
 
          InMemoryUsersRepository.users.push(user);
 
     }
 
-    async findAll(): Promise<Users[]> {
-        
-        console.log("all users",InMemoryUsersRepository.users);
+    public async findAll(): Promise<Users[]> {
         
         return InMemoryUsersRepository.users;
  
     }
 
-    public update(email: string): Promise<Users | null> {
+    public async update(_email: string, updatedUser: Users): Promise<Users | null> {
 
-        throw new Error("Method not implemented.");
+        const index = InMemoryUsersRepository.users.findIndex(({props:{email}})=> email == _email);
 
+        if (index != -1) {
+
+            InMemoryUsersRepository.users[index] = updatedUser;
+
+            return updatedUser;
+
+        } 
+
+        return null; // user not found
+        
     }
 
-    async find(email: string): Promise<Users | null> {
+    public async findOne(email: string): Promise<Users | null> {
 
        const user = InMemoryUsersRepository.users.find(user => user.props.email == email);
 
-       if (!user) {
-
-            return null;
-
-       }
+       if (!user) return null;
 
        return user;
 
     }
 
-    public delete(email: string): Promise<void> {
+    public async delete(email: string): Promise<void> {
 
-        throw new Error("Method not implemented.");
+        InMemoryUsersRepository.users = InMemoryUsersRepository.users.filter((user)=> user.props.email !== email);
 
     }
 
+    //@in memory database
+    //Jan 25/ 17:11 P.M
+    
 }

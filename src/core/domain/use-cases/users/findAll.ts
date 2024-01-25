@@ -1,15 +1,15 @@
 import Users from "../../entities/users";
 import { IFindAllUsersUseCase } from "../../ports/inbound/userInboundPorts";
-import UserAdaptersPort from "../../ports/outbound/userOutboundPort";
+import UserOutboundPorts from "../../ports/outbound/userOutboundPort";
 
-
-//@application bussiness
+//@application business
 export default class FindAllUsersUseCase implements IFindAllUsersUseCase  {
 
     constructor(
-        private readonly userAdaptersPort: UserAdaptersPort,
+        private readonly userAdaptersPort: UserOutboundPorts,
     ) {}
 
+    //@application orchestrator
     async execute(): Promise<Users[]> {
 
         const users = await this.userAdaptersPort.findAll();

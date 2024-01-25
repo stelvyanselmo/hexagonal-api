@@ -1,21 +1,29 @@
-import Users, { UserProps } from "../../entities/users";
+import Users, { UserPropsDto } from "../../entities/users";
 import { ICreateUserUseCase } from "../../ports/inbound/userInboundPorts";
-import UserAdaptersPort from "../../ports/outbound/userOutboundPort";
+import UserOutboundPorts from "../../ports/outbound/userOutboundPort";
 
 export type CreateUserResponse = {
+
+    resourceType: string;
+    text: {
+        div: string;
+        status: string;
+    }
     message: string;
+
 }
 
-//@application bussiness
+//@application business
 export default class CreateUserUseCase implements ICreateUserUseCase {
 
     constructor(
-        private readonly userAdaptersPort: UserAdaptersPort,
+        private readonly userAdaptersPort: UserOutboundPorts,
     ) {}
 
-    async execute({name, email, pwd }: UserProps): Promise<CreateUserResponse | null> {
+    //@application orchestrator
+    async execute({name, email, pwd }: UserPropsDto): Promise<CreateUserResponse | null> {
 
-        const user = await this.userAdaptersPort.find(email);
+        const user = await this.userAdaptersPort.findOne(email);
 
         if (user !== null) {
 
@@ -25,11 +33,18 @@ export default class CreateUserUseCase implements ICreateUserUseCase {
 
         const userObject = Users.create({name, email, pwd});
 
-        await this.userAdaptersPort.save(userObject);
+        await this.userAdaptersPort.create(userObject);
 
         return {
-            message: "user created successfully"
-        };
+
+            resourceType:"user entity",
+            text: {
+                div:"resource generated successfully",
+                status:"success"
+            },
+            message:"user created successfully"
+            
+        }
 
     }
 
